@@ -8,6 +8,7 @@ load_dotenv()
 
 client = OpenAI()
 
+# Here are all tool definations
 def query_db(sql):
     pass
 
@@ -157,7 +158,7 @@ frameworks = {
     "django-rest": "pip install djangorestframework && django-admin startproject"
 }
 
-
+#This is system prompt
 system_prompt = f"""
     You are an helpful AI Assistant who is specialized in resolving user queries.
     You work on start, plan, action, observe mode.
@@ -199,6 +200,7 @@ system_prompt = f"""
     Output: {{ "step": "plan", "content": "Confirm installer that the project is created" }}
     Output: {{ "step": "plan", "content": "Understand the structure of project and create a array of files and folders to be created for appropiate project structure" }}
     Output: {{ "step": "action", "function": "update_project", "input":"[{{\\"project_path\\": \\"my-nextjs-project\\",\\"file_path\\": \\"src/components/Button.js\\",\\"mode\\": \\"create\\"}}]" }}
+    Output: {{ "step": "output", "content": "Created the project with structure. Here provide structure and suggest user to update files in specified structures. Provide final structure using | and --" }}
     
     # Sign off with writing Readme file
 """
@@ -206,6 +208,7 @@ messages = [
     { "role": "system", "content": system_prompt }
 ]
 
+print(f" Hi, I am a coding agent 🤖 . I will help you create new project. Just tell me what do you want to build. Tell me if you have any franmework in mind and the name of the project and I'll get started!!")
 while True:
     user_query = input('> ')
     messages.append({ "role": "user", "content": user_query })
@@ -217,23 +220,14 @@ while True:
             messages=messages
         )
 
+#This code is to parse the output and perform actions
         parsed_output = json.loads(response.choices[0].message.content)
-        print(f" /n  LLM output {parsed_output}")
         messages.append({ "role": "assistant", "content": json.dumps(parsed_output) })
 
         if parsed_output.get("step") == "plan":
             print(f'🧠: {parsed_output.get("content")}')
             continue
         
-        # if parsed_output.get("step") == "action":
-        #     function_name = parsed_output.get("function")
-        #     tool_name = parsed_output.get("function")
-        #     tool_input = parsed_output.get("input")
-
-        #     if avaiable_tools.get(tool_name, False) != False:
-        #         output = avaiable_tools[tool_name].get("fn")(tool_input) ## get the function get_weather
-        #         messages.append({ "role": "assistant", "content": json.dumps({ "step": "observe", "output":  output}) })
-        #         continue
 
         if parsed_output.get("step") == "action":
             function_name = parsed_output.get("function")
