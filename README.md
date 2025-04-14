@@ -1,3 +1,9 @@
+
+
+
+https://github.com/user-attachments/assets/40628df7-b9c5-49c3-b12b-9cddd4a06bf7
+
+
 # CLI Framework Project Generator
 
 A command-line tool that leverages LLMs to create and update projects based on various frameworks. This agent-based CLI tool can generate projects, manage project structures, and create files - all through natural language interactions.
